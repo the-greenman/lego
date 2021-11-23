@@ -6,6 +6,9 @@ body {
 #base{
     width:100%;
     height: 100%;
+    display: flex;
+  justify-content: center;
+  align-items: center;
 }
 @media (orientation: landscape) {   
     .image{
@@ -33,8 +36,10 @@ transform: translateY(-50%);
  
 }
 
-.active {    
+.active {  
+    transition: opacity 1s ease-in-out;  
 }
 .hidden {
     display:none;
+    transition: opacity 1s ease-in-out;
 }
