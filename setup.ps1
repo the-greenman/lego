@@ -27,7 +27,7 @@ SetuserFTA .htm FirefoxHTML
 SetuserFTA .html FirefoxHTML
 
 
-New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\PasswordLess\Device" -Name DevicePasswordLessBuildVersion -Value 0 -Type Dword –Force
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\PasswordLess\Device" -Name "DevicePasswordLessBuildVersion" -Value 0
 
 $Username ='default'
 $Pass = 'default'
@@ -35,7 +35,10 @@ $RegistryPath = 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon'
 Set-ItemProperty $RegistryPath 'AutoAdminLogon' -Value "1" -Type String
 Set-ItemProperty $RegistryPath 'DefaultUsername' -Value $Username -type String
 Set-ItemProperty $RegistryPath 'DefaultPassword' -Value $Pass -type String
-Restart-Computer
+
+
+#  https://addons.mozilla.org/en-US/firefox/addon/autofullscreen/
+#Restart-Computer
 
 
 
