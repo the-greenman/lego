@@ -4,6 +4,7 @@ var delay = 5000;
 var interval = 10000;
 var max = 100;
 var bgcolor = "#34a19c";
+var batch = 30;
 
 /**
  * Load data from remote url
@@ -64,8 +65,10 @@ function extractItems(raw) {
             // loop through all elements
             if (document.getElementById(element.id) == null) {
                 //only add the element if it does not exist yet
-                base.appendChild(element);
-                count++;
+                if (count < batch) {
+                    base.appendChild(element);
+                    count++;
+                }    
             }
         })
         console.log(count + " new elements");
@@ -141,10 +144,12 @@ function init(dataFeed) {
     document.getElementById("loading").classList.remove('hidden');
     // Load the raw data from our API
     load(feed).then(rawData => {
+        display(); // init the loop 
         extractItems(rawData);
         extractConfig(rawData);
         document.getElementById("loading").classList.add('hidden');
         displayNext();
+        update();
     });
 }
 
@@ -179,8 +184,6 @@ document.addEventListener("DOMContentLoaded", function () {
     let autoFeed = urlParams.get('feed');
     if (autoFeed) {
         init(autoFeed)
-    }
-    display();
-    update();
+    }    
 
 });
