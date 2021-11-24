@@ -85,7 +85,6 @@ function displayNext(){
 }
 
 function init(feed) {
-
     document.getElementById("select").classList.add('hidden');
     document.getElementById("loading").classList.remove('hidden');
     // Load the raw data from our API
@@ -96,4 +95,12 @@ function init(feed) {
     });
 }
 
-setInterval(displayNext,5000)
+
+document.addEventListener("DOMContentLoaded", function(){
+    // Handler when the DOM is fully loaded
+    const urlParams = new URLSearchParams(window.location.search);
+    let feed = urlParams.get('feed');
+    if (feed) {init(feed)}
+    setInterval(displayNext,5000)
+    
+});
