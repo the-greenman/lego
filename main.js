@@ -85,10 +85,14 @@ function displayNext(){
 }
 
 function init(feed) {
+
     document.getElementById("select").classList.add('hidden');
+    document.getElementById("loading").classList.remove('hidden');
     // Load the raw data from our API
-    load(feed).then(rawData => {
+    load(feed).then(rawData => {        
         extractItems(rawData);
+        document.getElementById("loading").classList.add('hidden');
+        displayNext();
     });
 }
 
