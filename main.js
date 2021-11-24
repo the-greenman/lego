@@ -27,7 +27,7 @@ function processItem(item){
     processed.Images = item.Images.map((image)=>{
         return {
             Id: image.ImageId,
-            Src: image.ImageUrls.Original.Url,
+            Src: image.ImageUrls.Large.Url,
         }
     })    
     return processed;
