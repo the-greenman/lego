@@ -5,6 +5,7 @@ body {
 #select {
     color:white;
     font-size: 2em;
+    cursor: pointer;
 }
 
 #base{
