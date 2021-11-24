@@ -46,6 +46,7 @@ function generateElements(item) {
         let element = document.createElement('img');
         element.src = image.Src;
         element.id = image.Id;
+        element.onerror = function(){console.log("Error on "+this.id); this.remove();};
         element.classList.add('image', 'hidden');
         section.push(element);
     });
@@ -123,6 +124,11 @@ function extractConfig(rawData) {
         if (max != rawData.Config.Max) {
             max = rawData.Config.Max;
             console.log("Updating max to " + max)
+        }
+    
+        if (batch != rawData.Config.Batch) {
+            batch = rawData.Config.Batch;
+            console.log("Updating batch to " + batch)
         }
         if (bgcolor != rawData.Config.BGColor) {
             bgcolor = rawData.Config.BGColor;
