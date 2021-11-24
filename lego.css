@@ -2,6 +2,10 @@ body {
     margin:0;
     background-color: black;
 }
+#select {
+    color:white;
+    font-size: 2em;
+}
 
 #base{
     width:100%;

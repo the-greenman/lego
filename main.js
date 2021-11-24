@@ -8,8 +8,8 @@ var imageElements = [];
  * Load data from remote url
  * @returns 
  */
-async function load() {
-    let url = 'https://greenman-lego.builtwithdark.com/competition?PageSize=8';
+async function load(feed) {
+    let url = 'https://greenman-lego.builtwithdark.com/competition/'+feed
     let obj = await (await fetch(url)).json();
     return obj;
 }
@@ -84,9 +84,12 @@ function displayNext(){
     }
 }
 
-// Load the raw data from our API
-load().then(rawData => {
-    extractItems(rawData);
-});
+function init(feed) {
+    document.getElementById("select").classList.add('hidden');
+    // Load the raw data from our API
+    load(feed).then(rawData => {
+        extractItems(rawData);
+    });
+}
 
 setInterval(displayNext,5000)
