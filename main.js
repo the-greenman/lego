@@ -3,7 +3,7 @@ var feed = 0;
 var delay = 5000;
 var interval = 10000;
 var max = 100;
-
+var bgcolor = "#34a19c";
 
 /**
  * Load data from remote url
@@ -113,7 +113,11 @@ function extractConfig(rawData){
     if (max != rawData.Config.Max) {        
         max = rawData.Config.Max;
         console.log("Updating max to "+ max)
-    }    
+    }  
+    if (bgcolor != rawData.Config.BGColor) {        
+            bgcolor = rawData.Config.BGColor;
+            document.body.style.backgroundColor=bgcolor;            
+    }  
 }
 
 /** Initialise on load */
