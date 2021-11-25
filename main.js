@@ -82,7 +82,7 @@ function extractItems(raw) {
                 ++exists                
             }
         })
-        logging && console.log(count + " new elements, " + exists + " existing elements");
+        logging && console.log(count + " new elements, " + exists + " skipped elements");
         cleanUpElements();
     }
     catch (err) {
@@ -95,7 +95,8 @@ function extractItems(raw) {
  * Remove the oldest elements if we are over our max element size
  */
 function cleanUpElements() {
-    let elements = document.querySelectorAll(".image:not(.active)");
+    let elements = document.querySelectorAll(".image:not(.active)"); // we exclude active so that we dont remove the active image
+    logging && console.log("Total images in dom: " + (elements.length + 1))
     let diff = elements.length - max
     if (diff > 0) {
         for (let loop = 0; loop < diff; loop++) {
