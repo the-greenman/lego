@@ -5,13 +5,18 @@ var interval = 10000;
 var max = 100;
 var bgcolor = "#34a19c";
 var batch = 30;
+var page = 1;
+var totalPages =1;
+var pageIterationsMax = 20;
+var pageIterationsCount = 0;
+var logging = false
 
 /**
  * Load data from remote url
  * @returns 
  */
 async function load(feed) {
-    let url = 'https://greenman-lego.builtwithdark.com/competition/' + feed
+    let url = 'https://greenman-lego.builtwithdark.com/competition/' + feed + "?Page=" + page
     let obj = await (await fetch(url)).json();
     return obj;
 }
@@ -46,7 +51,7 @@ function generateElements(item) {
         let element = document.createElement('img');
         element.src = image.Src;
         element.id = image.Id;
-        element.onerror = function(){console.log("Error on "+this.id); this.remove();};
+        element.onerror = function(){logging && console.log("Error on "+this.id); this.remove();};
         element.classList.add('image', 'hidden');
         section.push(element);
     });
@@ -72,11 +77,11 @@ function extractItems(raw) {
                 }    
             }
         })
-        console.log(count + " new elements");
+        logging && console.log(count + " new elements");
         cleanUpElements();
     }
     catch (err) {
-        console.log("Bad feed");
+        logging && console.log("Bad feed");
     }
 
 }
@@ -86,7 +91,7 @@ function cleanUpElements() {
     let diff = elements.length - max
     if (diff > 0) {
         for (let loop = 0; loop < diff; loop++) {
-            console.log("Removing element: " + elements[loop].id)
+            logging && console.log("Removing element: " + elements[loop].id)
             elements[loop].remove();
         }
     }
@@ -115,25 +120,26 @@ function extractConfig(rawData) {
     try {
         if (delay != rawData.Config.Delay) {
             delay = rawData.Config.Delay;
-            console.log("Updating delay to " + delay)
+            logging && console.log("Updating delay to " + delay)
         }
         if (interval != rawData.Config.Interval) {
             interval = rawData.Config.Interval;
-            console.log("Updating interval to " + interval)
+            logging && console.log("Updating interval to " + interval)
         }
         if (max != rawData.Config.Max) {
             max = rawData.Config.Max;
-            console.log("Updating max to " + max)
+            logging && console.log("Updating max to " + max)
         }
     
         if (batch != rawData.Config.Batch) {
             batch = rawData.Config.Batch;
-            console.log("Updating batch to " + batch)
+            logging && console.log("Updating batch to " + batch)
         }
         if (bgcolor != rawData.Config.BGColor) {
             bgcolor = rawData.Config.BGColor;
             document.body.style.backgroundColor = bgcolor;
         }
+        totalPages = rawData.TotalPages; 
     }
     catch {
         //
@@ -149,12 +155,12 @@ function init(dataFeed) {
     document.getElementById("select").classList.add('hidden');
     document.getElementById("loading").classList.remove('hidden');
     // Load the raw data from our API
-    load(feed).then(rawData => {
-        display(); // init the loop 
+    load(feed).then(rawData => { 
         extractItems(rawData);
         extractConfig(rawData);
         document.getElementById("loading").classList.add('hidden');
         displayNext();
+        display(); // init the loop
         update();
     });
 }
@@ -166,7 +172,15 @@ function init(dataFeed) {
 */
 function update() {
     var reload = function () {
-        console.log("Updating...");
+        // check how many iterations we've done on this page
+        // update the page if we need to 
+        if (++pageIterationsCount == pageIterationsMax) {
+            if (++page > totalPages) {
+                page = 1;
+            }
+            pageIterationsCount = 0;
+        } 
+        logging && console.log("Updating...page " + page + " (" + pageIterationsCount + ")");
         load(feed).then(rawData => {
             extractItems(rawData);
             extractConfig(rawData);
@@ -188,6 +202,9 @@ document.addEventListener("DOMContentLoaded", function () {
     // Handler when the DOM is fully loaded
     const urlParams = new URLSearchParams(window.location.search);
     let autoFeed = urlParams.get('feed');
+    if (urlParams.get('log')) {
+        logging = true;
+    }
     if (autoFeed) {
         init(autoFeed)
     }    
