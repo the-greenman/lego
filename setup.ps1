@@ -7,18 +7,6 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManage
 choco install firefox -y
 choco install setuserfta -y
 
-# Make `refreshenv` available right away, by defining the $env:ChocolateyInstall
-# variable and importing the Chocolatey profile module.
-# Note: Using `. $PROFILE` instead *may* work, but isn't guaranteed to.
-$env:ChocolateyInstall = Convert-Path "$((Get-Command choco).Path)\..\.."   
-Import-Module "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
-
-# refreshenv is now an alias for Update-SessionEnvironment
-# (rather than invoking refreshenv.cmd, the *batch file* for use with cmd.exe)
-# This should make git.exe accessible via the refreshed $env:PATH, so that it
-# can be called by name only.
-refreshenv
-
 #set default browser
 
 SetuserFTA http FirefoxHTML
@@ -27,7 +15,7 @@ SetuserFTA .htm FirefoxHTML
 SetuserFTA .html FirefoxHTML
 
 
-Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\PasswordLess\Device" -Name "DevicePasswordLessBuildVersion" -Value 0
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\PasswordLess\Device" -Name "DevicePasswordLessBuildVersion" -Value 0 -Type Dword -Force
 
 $Username ='default'
 $Pass = 'default'
@@ -37,8 +25,17 @@ Set-ItemProperty $RegistryPath 'DefaultUsername' -Value $Username -type String
 Set-ItemProperty $RegistryPath 'DefaultPassword' -Value $Pass -type String
 
 
+# Manually install 
 #  https://addons.mozilla.org/en-US/firefox/addon/autofullscreen/
-#Restart-Computer
+
+# Open firefox to url: https://the-greenman.github.io/lego?feed=0
+# add shortcut to startup folder
+# Win+R shell:startup
+
+
+
+
+
 
 
 
