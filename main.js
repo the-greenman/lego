@@ -26,12 +26,7 @@ async function load(feed) {
  * @param {*} item 
  */
 function processItem(item) {
-    let processed = {
-        Id: item.Id,
-        Description: item.Description,
-        Title: item.Title
-    }
-    processed.Images = item.Images.map((image) => {
+    processed = item.Images.map((image) => {
         return {
             Id: image.ImageId,
             Src: image.ImageUrls.Large.Url,
@@ -40,23 +35,18 @@ function processItem(item) {
     return processed;
 }
 
-
 /**
- * Returns a dom element for each image.
- * @param {} item 
+ *  Create a dom element for the image
+ * 
  */
-function generateElements(item) {
-    let section = []
-    item.Images.forEach(image => {
-        let element = document.createElement('img');
-        element.onerror = function(){logging && console.log("Error on "+this.id); this.remove();};  // get rid of bad images
-        element.onload = function(){this.classList.add('loaded')} // flag images that are fully loaded 
-        element.src = image.Src;
-        element.id = image.Id;        
-        element.classList.add('image', 'hidden');
-        section.push(element);
-    });
-    return section;
+function generateElement(image) {
+    let element = document.createElement('img');
+    element.onerror = function(){logging && console.log("Error on "+this.id); this.remove();};  // get rid of bad images
+    element.onload = function(){this.classList.add('loaded')} // flag images that are fully loaded 
+    element.src = image.Src;
+    element.id = image.Id;        
+    element.classList.add('image', 'hidden');
+    return element;
 }
 /**
  * Process incoming feed to select desired data
@@ -65,19 +55,14 @@ function generateElements(item) {
 function extractItems(raw) {
     try {
         let processed = raw.Items.map(processItem);
-        let elements = processed.map(generateElements);
+        //let elements = processed.map(generateElements);
         let base = document.getElementById('base');
         let count = 0;
         let exists = 0;
-        elements.flat().forEach(element => {
-            // loop through all elements
-            if (document.getElementById(element.id) == null) {
-                //only add the element if it does not exist yet
-                if (count < batch) {
-                    // we only add a limited number of elements at a time
-                    base.appendChild(element);
-                    count++;
-                }    
+        processed.flat().forEach(image => {            
+            if (document.getElementById(image.Id) == null && count++ < batch) {
+                let element = generateElement(image);
+                base.appendChild(element);                   
             } else {
                 ++exists                
             }
