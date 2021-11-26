@@ -10,7 +10,8 @@ var totalPages =1;
 var pageIterationsMax = 20;
 var pageIterationsCount = 0;
 var logging = false
-
+var browserRestart = 0;
+var activeImage;
 /**
  * Load data from remote url
  * 
@@ -42,7 +43,14 @@ function processItem(item) {
 function generateElement(image) {
     let element = document.createElement('img');
     element.onerror = function(){logging && console.log("Error on "+this.id); this.remove();};  // get rid of bad images
-    element.onload = function(){this.classList.add('loaded')} // flag images that are fully loaded 
+    element.onload = function(){
+        this.classList.add('loaded'); 
+        if (!activeImage) {
+             this.classList.add('active');  // activate the first image that loads    
+             this.classList.remove('hidden');
+             activeImage=this.id;
+        }
+    } // flag images that are fully loaded 
     element.src = image.Src;
     element.id = image.Id;        
     element.classList.add('image', 'hidden');
@@ -111,6 +119,7 @@ function displayNext() {
     if (next) {
         next.classList.add('active');
         next.classList.remove('hidden');
+        activeImage = next.id;
     }
 }
 
@@ -145,7 +154,14 @@ function extractConfig(rawData) {
             pageIterationsMax = rawData.Config.PageIterations;
             logging && console.log("Updating page iterations to " + pageIterationsMax)
         }
-        
+        if (browserRestart != rawData.Config.BrowserRestart) {
+            browserRestart = rawData.Config.BrowserRestart;
+            logging && console.log("Enabling restart at "+browserRestart)
+            if (browserRestart>0) {
+                setTimeout(restart, 1000+browserRestart*1000);
+            }            
+        }
+
 
         totalPages = rawData.TotalPages; 
     }
@@ -190,7 +206,7 @@ function update() {
         logging && console.log("Updating...page " + page + " (" + pageIterationsCount + ")");
         load(feed).then(rawData => {
             extractItems(rawData);
-            extractConfig(rawData);
+            extractConfig(rawData);            
         });
         setTimeout(reload, interval);
     }
@@ -206,6 +222,13 @@ function display() {
         setTimeout(next, delay);
     }
     setTimeout(next, delay);
+}
+
+/**
+ * Force a reload of the page
+ */
+function restart(){
+    location.reload();
 }
 
 document.addEventListener("DOMContentLoaded", function () {
