@@ -1,7 +1,6 @@
 body {
     margin:0;
-    background-color: #34a19c;
-    color:white;
+    background-color: #000;
 }
 #select {
 
@@ -25,6 +24,8 @@ body {
     display: flex;
   justify-content: center;
   align-items: center;
+  background-color: #34a19c;
+    color:white;
 }
 @media (orientation: landscape) {   
     .image{
@@ -53,9 +54,7 @@ transform: translateY(-50%);
 }
 
 .active {  
-    transition: opacity 1s ease-in-out;  
 }
-.hidden {
+.hidden, #base.hidden {
     display:none;
-    transition: opacity 1s ease-in-out;
 }

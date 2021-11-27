@@ -12,6 +12,10 @@ var pageIterationsCount = 0;
 var logging = false
 var browserRestart = 0;
 var activeImage;
+
+
+var blankStartHour  = 9
+var blankEndHour = 10
 /**
  * Load data from remote url
  * 
@@ -154,6 +158,17 @@ function extractConfig(rawData) {
             pageIterationsMax = rawData.Config.PageIterations;
             logging && console.log("Updating page iterations to " + pageIterationsMax)
         }
+        if (blankStartHour != rawData.Config.BlankStart) {
+            blankStartHour = rawData.Config.BlankStart;
+            logging && console.log("Updating blank start to " + blankStartHour)
+        }
+        if (blankEndHour != rawData.Config.BlankEnd) {
+            blankEndHour = rawData.Config.BlankEnd;
+            logging && console.log("Updating blank end to " + blankEndHour)
+        }
+
+
+
         if (browserRestart != rawData.Config.BrowserRestart) {
             browserRestart = rawData.Config.BrowserRestart;
             logging && console.log("Enabling restart at "+browserRestart)
@@ -219,9 +234,20 @@ function update() {
 function display() {
     var next = function () {
         displayNext();
+        blanker();
         setTimeout(next, delay);
     }
     setTimeout(next, delay);
+}
+
+function blanker(){
+    const d = new Date();
+    let hour = d.getHours();
+    if (hour >= blankStartHour && hour < blankEndHour) {
+        document.getElementById("base").classList.add('hidden');
+    }  else {
+        document.getElementById("base").classList.remove('hidden');
+    }
 }
 
 /**
@@ -239,6 +265,7 @@ document.addEventListener("DOMContentLoaded", function () {
         logging = true;
     }
     if (autoFeed) {
+        blanker();
         init(autoFeed)
     }    
 
