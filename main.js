@@ -4,6 +4,7 @@ var delay = 5000;
 var interval = 10000;
 var max = 100;
 var bgcolor = "#34a19c";
+var transform = "1,0,0,1,0,0";
 var batch = 30;
 var page = 1;
 var totalPages =1;
@@ -22,7 +23,11 @@ var blankEndHour = 10
  */
 async function load(feed) {
     let url = 'https://greenman-lego.builtwithdark.com/competition/' + feed + "?Page=" + page
-    let obj = await (await fetch(url)).json();
+    let obj = {}
+    try {
+      obj = await (await fetch(url)).json();
+    } catch {
+    }
     return obj;
 }
 
@@ -154,6 +159,12 @@ function extractConfig(rawData) {
             bgcolor = rawData.Config.BGColor;
             document.body.style.backgroundColor = bgcolor;
         }
+        if (transform != rawData.Config.Transform) {
+            transform = rawData.Config.Transform;
+            document.getElementById("base").style.transform = "matrix("+transform+")";
+            logging && console.log("Updating transform to " + transform)
+        }    
+
         if (pageIterationsMax != rawData.Config.PageIterations) {
             pageIterationsMax = rawData.Config.PageIterations;
             logging && console.log("Updating page iterations to " + pageIterationsMax)
@@ -201,7 +212,7 @@ function init(dataFeed) {
         displayNext();
         display(); // init the loop
         update();
-    });
+    }).catch();
 }
 
 /** Check for more content 
@@ -222,7 +233,9 @@ function update() {
         load(feed).then(rawData => {
             extractItems(rawData);
             extractConfig(rawData);            
-        });
+        }).catch(
+            
+        );
         setTimeout(reload, interval);
     }
     setTimeout(reload, interval);

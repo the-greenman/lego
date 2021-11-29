@@ -1,6 +1,6 @@
 body {
     margin:0;
-    background-color: #000;
+    background-color: #34a19c;
 }
 #select {
 
@@ -24,7 +24,6 @@ body {
     display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #34a19c;
     color:white;
 }
 @media (orientation: landscape) {   

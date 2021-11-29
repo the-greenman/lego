@@ -1,0 +1,63 @@
+<html>
+    <head>
+        <script lang="javascript">
+            var matrix = [];
+
+        async function load(feed) {
+            let url = 'https://greenman-lego.builtwithdark.com/transform/' + feed
+            let obj = await (await fetch(url)).json();
+            return obj;
+        }
+
+            function getTransform(){
+               load(document.getElementById("feed").value).then(data => {
+                  let matrix = data.matrix.split(",");
+                  document.getElementById("scaleX").value=matrix[0];
+                  document.getElementById("skewY").value=matrix[1];
+                  document.getElementById("skewX").value=matrix[2];
+                  document.getElementById("scaleY").value=matrix[3];
+                  document.getElementById("translateX").value=matrix[4];
+                  document.getElementById("translateY").value=matrix[5];  
+
+               })   
+            }
+
+            function formSubmit(){
+                matrix[0] = document.getElementById("scaleX").value
+                matrix[1] = document.getElementById("skewY").value
+                matrix[2] = document.getElementById("skewX").value
+                matrix[3] = document.getElementById("scaleY").value
+                matrix[4] = document.getElementById("translateX").value
+                matrix[5] = document.getElementById("translateY").value 
+                transform = matrix.join(",")
+                let url = "https://greenman-lego.builtwithdark.com/transform/"+document.getElementById("feed").value+"/"+transform
+                fetch( url )
+                        .then( response => response.json() )
+                        .then( response => {
+                            // Do something with response.
+                    } );
+            }
+        </script>
+    </head>
+    <body>
+        <form>
+            <label for="feed">Feed:</label><select id="feed" onchange="getTransform()">
+                <option value="0">0</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">test</option>
+            </select><br>
+            <label for="scaleX">ScaleX:</label><input id="scaleX" type="number"><br>
+            <label for="skewY">SkewY:</label><input id="skewY" type="number"><br>
+            <label for="skewX">SkewX:</label><input id="skewX" type="number"><br>
+            <label for="scaleY">ScaleY:</label><input id="scaleY" type="number"><br>
+            <label for="translateX">TranslateX:</label><input id="translateX" type="number"><br>
+            <label for="translateY">TranslateY:</label><input id="translateY" type="number"><br>
+            <input type="button" onclick="formSubmit()" value="update">
+        </form>
+
+
+    </body>
+</html>
