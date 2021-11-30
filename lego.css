@@ -2,6 +2,7 @@ body {
     margin:0;
     background-color: #34a19c;
     overflow: hidden;
+    cursor: none;
 }
 #select {
 
