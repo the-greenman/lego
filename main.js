@@ -258,8 +258,10 @@ function blanker(){
     let hour = d.getHours();
     if (hour >= blankStartHour && hour < blankEndHour) {
         document.getElementById("base").classList.add('hidden');
+        document.body.classList.add('blank');
     }  else {
         document.getElementById("base").classList.remove('hidden');
+        document.body.classList.remove('blank');
     }
 }
 

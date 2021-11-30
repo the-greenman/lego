@@ -4,6 +4,10 @@ body {
     overflow: hidden;
     cursor: none;
 }
+
+body.blank {
+    background-color: #000 !important;
+}
 #select {
 
     font-size: 2em;
